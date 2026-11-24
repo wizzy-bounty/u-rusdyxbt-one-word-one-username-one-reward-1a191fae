@@ -43,6 +43,13 @@ def main() -> None:
     if not written.strip():
         raise ValueError("written entry must not be only whitespace")
 
+    # Byte-level verification: the file on disk must be exactly the
+    # handle's UTF-8 bytes — no BOM, no trailing newline, no extra content.
+    with open(OUTPUT_PATH, "rb") as f:
+        raw = f.read()
+    if raw != handle.encode("utf-8"):
+        raise ValueError("written entry bytes do not match the handle")
+
 
 if __name__ == "__main__":
     main()
